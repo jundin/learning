@@ -32,7 +32,7 @@ AQS 是一个用来构建锁和同步器的框架，使用 AQS 能简单且高�
 AQS 是将每条请求共享资源的线程封装成一个 CLH 锁队列的一个结点（Node）来实现锁的分配。
 
 看个 AQS(AbstractQueuedSynchronizer)原理图：
-![AQS.png](image/AQS.png)
+![AQS.png](images/AQS.png)
 
 AQS 使用一个 int 成员变量来表示同步状态，通过内置的 FIFO 队列来完成获取资源线程的排队工作。
 AQS 使用 CAS 对该同步状态进行原子操作实现对其值的修改。

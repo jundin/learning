@@ -2,7 +2,7 @@
 HashMap本质上是一个散列表，那么就离不开散列表的三大问题：散列函数、哈希冲突、扩容方案；同时作为一个数据结构，必须考虑多线程并发访问的问题，也就是线程安全。这四大重点则为学习HashMap的重点，也是HashMap设计的重点。
 
 HashMap属于Map集合体系的一部分，同时继承了Serializable接口可以被序列化，继承了Cloneable接口可以被复制。他的的继承结构如下：
-![HashMapImpl.png](image/HashMapImpl.png)
+![HashMapImpl.png](images/HashMapImpl.png)
 
 HashMap并不是全能的，对于一些特殊的情景下的需求官方拓展了一些其他的类来满足，如线程安全的ConcurrentHashMap、
 记录插入顺序的LinkHashMap、给key排序的TreeMap等。
@@ -38,7 +38,7 @@ HashMap哈希函数的步骤：
         }
 ```
 完整的hash计算过程可以参考下图：
-![Hash.png](image/Hash.png)
+![Hash.png](images/Hash.png)
 
 上面我们提到HashMap的数组长度为2的整数次幂，那么HashMap是如何控制数组的长度为2的整数次幂的？修改数组长度有两种情况：
 - 初始化时指定的长度
@@ -75,7 +75,7 @@ final Node<K,V>[] resize() {
 再优秀的hash算法永远无法避免出现hash冲突。hash冲突指的是两个不同的key经过hash计算之后得到的数组下标是相同的。
 解决hash冲突的方式很多，如开放定址法、再哈希法、公共溢出表法、链地址法。HashMap采用的是链地址法，jdk1.8之后还增加了红黑树的优化。
 如下图：
-![HashMap.png](image/HashMap.png)
+![HashMap.png](images/HashMap.png)
 
 出现冲突后会在当前节点形成链表，而当链表过长之后，会自动转化成红黑树提高查找效率。红黑树是一个查找效率很高的数据结构，时间复杂度为O(logN)，
 但红黑树只有在数据量较大时才能发挥它的优势。关于红黑树的转化，HashMap做了以下限制。
@@ -120,12 +120,12 @@ HashMap中的装载因子的默认大小是0.75，没有特殊要求的情况下
 那么在到达阈值之后，HashMap是如何进行扩容的呢？HashMap会把数组长度扩展为原来的两倍，再把旧数组的数据迁移到新的数组，
 而HashMap针对迁移做了优化：使用HashMap数组长度是2的整数次幂的特点，以一种更高效率的方式完成数据迁移。
 
-![transfer.png](image/transfer.png)
+![transfer.png](images/transfer.png)
 
 从图中我们可以看到，在新数组中的hash结果，仅仅取决于高一位的数值。如果高一位是0，那么计算结果就是在原位置，而如果是1，则加上原数组的长度即可。
 这样我们只需要判断一个节点的高一位是1 or 0就可以得到他在新数组的位置，而不需要重复hash计算。HashMap把每个链表拆分成两个链表，
 对应原位置或原位置+原数组长度，再分别插入到新的数组中，保留原来的节点顺序，如下：
-![transferResult.png](image/transferResult.png)
+![transferResult.png](images/transferResult.png)
 
 ## 小结
 1. 装载因子决定了HashMap扩容的阈值，需要权衡时间与空间，一般情况下保持0.75不作改动；
@@ -207,7 +207,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) {
 3. 链表到达一定长度后需要扩展为红黑树，当且仅当链表长度>=8且数组长度>=64。
 
 最后画一张图总体再加深一下整个流程的印象：
-![putVal.png](image/putVal.png)
+![putVal.png](images/putVal.png)
 
 ## 其他问题
 1. 为什么jdk1.7以前控制数组的长度为素数，而jdk1.8之后却采用的是2的整数次幂？

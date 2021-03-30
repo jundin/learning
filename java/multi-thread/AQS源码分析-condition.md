@@ -87,7 +87,7 @@ public class ConditionObject implements Condition, java.io.Serializable {
 
 这里的阻塞队列如果叫做同步队列（sync queue）其实比较贴切，不过为了和前篇呼应，我就继续使用阻塞队列了。记住这里的两个概念，阻塞队列和条件队列。
 
-![conditionQueue.png](image/conditionQueue.png)
+![conditionQueue.png](images/conditionQueue.png)
 
 ```text
 这里，我们简单回顾下 Node 的属性：

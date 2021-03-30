@@ -26,7 +26,7 @@ private transient Thread exclusiveOwnerThread;
 **AbstractQueuedSynchronizer 的等待队列示意如下所示，
 注意了，之后分析过程中所说的 queue，也就是阻塞队列不包含 head，不包含 head，不包含 head。**
 
-![queue.png](image/queue.png)
+![queue.png](images/queue.png)
 
 等待队列中每个线程被包装成一个 Node 实例，数据结构是链表，一起看看源码吧：
 ```java
@@ -264,7 +264,7 @@ private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
 **waitStatus=-1代表后继节点需要被唤醒**
 
 **acquire(int arg)方法流程图**
-![acquire.png](image/acquire.png)
+![acquire.png](images/acquire.png)
 
 ##示例图解析
 1. 第一个线程调用 reentrantLock.lock()，tryAcquire(1) 直接就返回 true 了，结束。
@@ -291,17 +291,17 @@ private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
     }
 ```
 首先，是线程 2 初始化 head 节点，此时 head==tail, waitStatus==0
-![setHead.png](image/setHead.png)
+![setHead.png](images/setHead.png)
 
 然后线程 2 入队：
-![Thread2IntoQueue.png](image/Thread2IntoQueue.png)
+![Thread2IntoQueue.png](images/Thread2IntoQueue.png)
 同时我们也要看此时节点的 waitStatus，我们知道 head 节点是线程 2 初始化的，此时的 waitStatus 没有设置， java 默认会设置为 0，
 但是到 shouldParkAfterFailedAcquire 这个方法的时候，线程 2 会把前驱节点，也就是 head 的waitStatus设置为 -1。
 
 那线程 2 节点此时的 waitStatus 是多少呢，由于没有设置，所以是 0；
 
 如果线程 3 此时再进来，直接插到线程 2 的后面就可以了，此时线程 3 的 waitStatus 是 0，到 shouldParkAfterFailedAcquire 方法的时候把前驱节点线程 2 的 waitStatus 设置为 -1。
-![Thread3IntoQueue.png](image/Thread3IntoQueue.png)
+![Thread3IntoQueue.png](images/Thread3IntoQueue.png)
 这里可以简单说下 waitStatus 中 SIGNAL(-1) 状态的意思，Doug Lea 注释的是：代表后继节点需要被唤醒。
 也就是说这个 waitStatus 其实代表的不是自己的状态，而是后继节点的状态，我们知道，每个 node 在入队的时候，都会把前驱节点的状态改为 SIGNAL，然后阻塞，等待被前驱唤醒。
 

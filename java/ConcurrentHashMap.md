@@ -3,11 +3,11 @@
 ## ConcurrentHashMap的并发策略概述
 Hashtable与SynchronizeMap采取的并发策略是对整个数组对象加锁，导致性能及其低下。
 jdk1.7之前，ConcurrentHashMap采用的是锁分段策略来优化性能，如下图：
-![segment.png](image/segment.png)
+![segment.png](images/segment.png)
 
 相当于把整个数组，拆分成多个小数组。每次操作只需要锁住操作的小数组即可，不同的segment之间不互相影响，提高了性能。
 jdk1.8之后，对整个策略进行了重构。锁的不是segment，而是节点，如下图：
-![ConcurrentHashMap.png](image/ConcurrentHashMap.png)
+![ConcurrentHashMap.png](images/ConcurrentHashMap.png)
 
 锁的粒度进一步被降低，并发的效率也提高了。jdk1.8做得优化不只是细化锁粒度，还带来了CAS+synchronize的设计。
 那么下面，我们针对ConcurrentHashMap的常见方法：添加、删除、扩容、初始化等进行详解他的设计思路。
@@ -17,7 +17,7 @@ jdk1.8之后，对整个策略进行了重构。锁的不是segment，而是节�
 ConcurrentHashMap添加数据时，采取了CAS+synchronize结合策略。首先会判断该节点是否为null，如果为null，尝试使用CAS添加节点；
 如果添加失败，说明发生了并发冲突，再对节点进行上锁并插入数据。在并发较低的情景下无需加锁，可以显著提高性能。同时只会CAS尝试一次，
 也不会造成线程长时间等待浪费cpu时间的情况。ConcurrentHashMap的put方法整体流程如下（并不是全部流程）：
-![CurrentHashMapPutVal.png](image/CurrentHashMapPutVal.png)
+![CurrentHashMapPutVal.png](images/CurrentHashMapPutVal.png)
 
 1. 首先会判断数组是否已经初始化，如若未初始化，会先去初始化数组；
 2. 如果当前要插入的节点为null，尝试使用CAS插入数据；
@@ -134,7 +134,7 @@ final V putVal(K key, V value, boolean onlyIfAbsent) {
 ## 初始化数组：initTable()
 
 初始化操作的重点是：保证多个线程并发调用此方法，只能有一个线程成功。ConcurrentHashMap采取了CAS+自旋的方法来解决并发问题，整体流程如下图：
-![initTable.png](image/initTable.png)
+![initTable.png](images/initTable.png)
 
 1. 首先会判断数组是否为null，如果否说明另一个线程初始化结束了，直接返回该数组；
 2. 第二步判断是否正在初始化，如果是会让出cpu执行时间，当前线程自旋等待
