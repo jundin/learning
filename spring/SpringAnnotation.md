@@ -802,9 +802,9 @@ public void save() {
 
 更多关于 Spring 事务的内容请查看：
 
-**[Spring 事务管理详解](Transaction.md)**
+**[Spring 事务管理详解](../database/Transaction.md)**
 
-**[@Transactional 注解失效场景](TransactionInvalid.md)**
+**[@Transactional 注解失效场景](../database/TransactionInvalid.md)**
 
 ### 10. json 数据处理
 
