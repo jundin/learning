@@ -27,7 +27,7 @@
 
 ## Eureka的实现
 eureka的官方架构图，这是基于集群配置的eureka：
-![eureka.png](image/eureka.png)
+![eureka.png](../spring/image/eureka.png)
 
 ### eureka的基本原理
 - 处于不同节点的eureka通过Replicate进行数据同步
@@ -106,5 +106,3 @@ Eureka作为单纯的服务注册中心来说要比zookeeper更加“专业”�
 ## Zab协议
 Zab协议 的全称是 Zookeeper Atomic Broadcast （Zookeeper原子广播）。
 Zookeeper 是通过 Zab 协议来保证分布式事务的最终一致性。 
-
-https://blog.csdn.net/liuchang19950703/article/details/111406622
