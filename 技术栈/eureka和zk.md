@@ -106,3 +106,6 @@ Eureka作为单纯的服务注册中心来说要比zookeeper更加“专业”�
 ## Zab协议
 Zab协议 的全称是 Zookeeper Atomic Broadcast （Zookeeper原子广播）。
 Zookeeper 是通过 Zab 协议来保证分布式事务的最终一致性。 
+
+eureka原理分析
+https://zhuanlan.zhihu.com/p/88385121

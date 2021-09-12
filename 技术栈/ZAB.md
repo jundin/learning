@@ -92,3 +92,12 @@ Znode将节点分为持久节点和临时节点。
 
 在分布式系统中，顺序号可以被用于为所有事件进行全局排序，这样客户端可以通过顺序号推断事件的顺序        
 临时节点适合动态上下线
+
+
+## 脑裂
+因为心跳超时，可能是master挂了，可能是master，zookeeper之间的网络出现问题，这时候就是假死。
+slaver中选取一个新的master，原来的master并未死掉，这时候就出现了两个master。
+每选取一个新的leader，会生成一个epoch，这个epoch是递增的。
+follower确认新的leader存在，知道起epoch，就会拒绝epoch小于现任leader epoch的所有请求。
+
+
