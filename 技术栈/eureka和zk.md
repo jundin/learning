@@ -27,7 +27,7 @@
 
 ## Eureka的实现
 eureka的官方架构图，这是基于集群配置的eureka：
-![eureka.png](../spring/image/eureka.png)
+![eureka.png](eureka.png)
 
 ### eureka的基本原理
 - 处于不同节点的eureka通过Replicate进行数据同步
