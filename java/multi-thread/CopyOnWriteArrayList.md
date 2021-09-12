@@ -86,6 +86,22 @@ public boolean add(E e) {
     }
 }
 ```
+```java
+public boolean add(E e) {
+        final ReentrantLock lock = this.lock;
+        lock.lock();
+        try {
+            Object[] elements = getArray();
+            int len = elements.length;
+            Object[] newElements = Arrays.copyOf(elements, len + 1);
+            newElements[len] = e;
+            setArray(newElements);
+            return true;
+        } finally {
+            lock.unlock();
+        }
+    }
+```
 
 恍然大悟，小样，原来add()在添加集合的时候加上了锁，保证了同步，避免了多线程写的时候会Copy出N个副本出来。(想想，你在遍历一个10个元素的集合，每遍历一次有1人调用add方法，你说当你遍历10次，这add方法是不是得被调用10次呢？是不是得copy出10分新集合呢？万一这个集合非常大呢？)
 那么？你还要问？CopyOnWriteArrayList是怎么解决线程安全问题的？答案就是----写时复制，加锁 还要问？那么有没有这么一种情况，当一个线程刚好调用完add()方法，也就是刚好执行到上面1处的代码，也就是刚好将引用指向心数组，而此时有线程正在遍历呢？会不会报错呢？（答案是不会的，因为你正在遍历的集合是旧的，这就有点难受啦，哈哈~）
