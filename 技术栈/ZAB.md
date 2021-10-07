@@ -80,7 +80,6 @@ Follower接受到了事务Proposal请求后，并会对其进行投票，返回A
 ZAB协议主要用于构建一个高可用的分布式数据的主备系统，因为有崩溃恢复，Leader崩溃能够重新选举，达到一个高可用的目的。
 而Paxos算法目的在于构建一个分布式数据一致性系统，强调的是数据的一致性，当Proposer提议者崩溃时不能自我恢复，从而丢失高可用的功能
 
-
 ## 数据节点
 Znode将节点分为持久节点和临时节点。
 - 持久节点
@@ -93,11 +92,19 @@ Znode将节点分为持久节点和临时节点。
 在分布式系统中，顺序号可以被用于为所有事件进行全局排序，这样客户端可以通过顺序号推断事件的顺序        
 临时节点适合动态上下线
 
-
 ## 脑裂
 因为心跳超时，可能是master挂了，可能是master，zookeeper之间的网络出现问题，这时候就是假死。
 slaver中选取一个新的master，原来的master并未死掉，这时候就出现了两个master。
 每选取一个新的leader，会生成一个epoch，这个epoch是递增的。
 follower确认新的leader存在，知道起epoch，就会拒绝epoch小于现任leader epoch的所有请求。
 
+### Curator
+Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。
+
+### 为什么Zookeeper可以⽤来作为注册中⼼
+可以利⽤Zookeeper的临时节点和watch机制来实现注册中⼼的⾃动注册和发现，另外Zookeeper中的
+数据都是存在内存中的，并且Zookeeper底层采⽤了nio，多线程模型，所以Zookeeper的性能也是⽐较
+⾼的，所以可以⽤来作为注册中⼼，但是如果考虑到注册中⼼应该是注册可⽤性的话，那么Zookeeper
+则不太合适，因为Zookeeper是CP的，它注重的是⼀致性，所以集群数据不⼀致时，集群将不可⽤，所
+以⽤Redis、Eureka、Nacos来作为注册中⼼将更合适。
 
